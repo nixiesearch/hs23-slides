@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Horrors of relevance tuning</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/dracula.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<img src="img/main.png" height="450px" style="margin: 0px;">
+					<h2 style="margin: 0px;">HORRORS OF RELEVANCE TUNING</h2>
+					<h3 style="margin: 0px;">in the ages of semantic search</h3>
+					<p><small>Roman Grebennikov | Haystack EU 23</small></p>
+				</section>
+				<section>
+					<h2>A typical semantic search project</h2>
+					<ul>
+						<li class="fragment">Take all-MiniLM-L6-v2 / E5-base-v2</li>
+						<li class="fragment">Compute embeddings with SBERT</li>
+						<li class="fragment">Put it to a magical vector database</li>
+					</ul>
+					<img class="fragment" src="img/wheel.png" height="400px">
+				</section>
+				<section>
+					<h2>Search results for "milk"</h2>
+					<img src="img/milk.png" height="600px">
+				</section>
+				<section>
+					<h2>Search results in Qdrant</h2>
+					<img src="img/milk.png" height="600px">
+				</section>
+				<section>
+					<h2>Search results in Vespa</h2>
+					<img src="img/milk.png" height="600px">
+				</section>
+				<section>
+					<h2>Search results in Pinecone</h2>
+					<img src="img/milk.png" height="600px">
+				</section>
+				<section>
+					<h2>Not DB but embeddings matter</h2>
+					<img src="img/reimers.png" height="500px">
+				</section>
+				<section>
+					<h2>Fine-tuning?</h2>
+					<img src="img/ft.png" height="600px">
+				</section>
+				<section>
+					<img src="img/plumbing.png" height="500px">
+					<small>[1] Doug Turnbull's Haystack18 Keynote</small>
+				</section>
+				<section>
+					<img src="img/plumbing2.png" height="500px">
+					<small>[1] Doug Turnbull's Haystack18 Keynote</small>
+				</section>
+				<section>
+					<h2>Commoditizing semantic search</h2>
+					<p style="margin: 0px;">HNSW recall is not a business problem!</p>
+					<img src="img/ctr.png" height="500px">
+				</section>
+				<section>
+					<h2>Commoditizing semantic search</h2>
+					<ul>
+						<li class="fragment"><strong>Relevance signals</strong>: milk != goat milk soap</li>
+						<li class="fragment"><strong>Typo tolerance</strong>: mlk = miilk = ilk</li>
+						<li class="fragment"><strong>k-NN cutoff problem</strong>: where to stop vector search?</li>
+						<li class="fragment"><strong>Autocomplete</strong>: m-mi-mil = milk</li>
+					</ul>
+				</section>
+				<section>
+					<img src="img/plumbing3.png">
+				</section>
+				<section>
+					<h2>Nixiesearch: not a yet another vector search engine</h2>
+					<img src="img/nixie.png" height="600px">
+				</section>
+				<section>
+					<h2>Experimental & research project</h2>
+					<p>A lot of <strong>tech</strong> inspiration from the industry:</p>
+					<ul>
+						<li><strong>Hybrid & Lucene-based</strong>: ES-like API with facets+filters</li>
+						<li><strong>S3 segment replication</strong>: a-la ES/OS</li>
+						<li><strong>Stateless searchers</strong>: a-la NrtSearch</li>
+						<li><strong>Text-in text-out</strong>: a-la Vespa/Weaviate</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Relevance signals</h2>
+					<p>query + relevant document, explicit/implicit</p>
+					<ul>
+						<li>Generate hard negatives</li>
+						<li>Fine-tune a custom E5/MiniLM model</li>
+						<li>(optional) Synthetic query generation with LLM</li>
+					</ul>
+				</section>
+				<section>
+					<h2>The autocomplete problem</h2>
+					<p>Is it a semantic search problem?</p>
+					<p>query: mi, passage: milk</p>
+					<img class="fragment" src="img/suggest.png">
+				</section>
+				<section>
+					<h2>The cut-off problem</h2>
+					<p>Where to stop the vector search?</p>
+					<ul>
+						<li>Have query+document pairs? Use it!</li>
+						<li><strong>Global cut-off</strong>: # of relevant docs per threshold</li>
+						<li><strong>Per-query cut-off</strong>: ML model to predict it</li>
+					</ul>
+				</section>
+				<section>
+					<p><a href="https://github.com/nixiesearch/nixiesearch">github.com/nixiesearch/nixiesearch</a></p>
+					<p><img src="img/fine.jpg" height="300px"></p>
+					<ul>
+						<li><strong>Nothing works</strong>: but there's MSMARCO e2e test</li>
+						<li><strong>No docs</strong>: just read the scala code!</li>
+						<li><strong>No releases</strong>: but there are snapshots on docker hub</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Con: needs GPU</h2>
+					<img src="img/suka2.png">
+				</section>
+
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+                history: true,
+                controls: true,
+                progress: true,
+                width: 1200,
+                transition: 'none',
+                slideNumber: true,
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
